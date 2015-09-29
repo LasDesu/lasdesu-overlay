@@ -1,0 +1,19 @@
+diff -ruNd deadbeef-0.5.1-old/plugins/mpgmad/mpgmad.c deadbeef-0.5.1/plugins/mpgmad/mpgmad.c
+--- deadbeef-0.5.1-old/plugins/mpgmad/mpgmad.c	2011-05-22 17:58:53.000000000 +0400
++++ deadbeef-0.5.1/plugins/mpgmad/mpgmad.c	2011-12-30 13:28:04.000000000 +0400
+@@ -802,10 +802,12 @@
+     info->buffer.it = it;
+     info->info.readpos = 0;
+     if (!info->buffer.file->vfs->is_streaming ()) {
+-        int skip = deadbeef->junk_get_leading_size (info->buffer.file);
+-        if (skip > 0) {
++		int skip, totalskip = 0;
++		while ( ( skip = deadbeef->junk_get_leading_size (info->buffer.file) ) > 0 )
++		{
++			totalskip += skip;
+             trace ("mpgmad: skipping %d(%xH) bytes of junk\n", skip, skip);
+-            deadbeef->fseek (info->buffer.file, skip, SEEK_SET);
++            deadbeef->fseek (info->buffer.file, totalskip, SEEK_SET);
+         }
+         int res = cmp3_scan_stream (&info->buffer, -1);
+         if (res < 0) {

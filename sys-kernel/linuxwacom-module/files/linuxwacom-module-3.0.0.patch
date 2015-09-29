@@ -1,0 +1,11 @@
+--- configure.in.orig	2011-10-23 16:53:28.000000000 +0400
++++ configure.in	2011-10-23 16:57:42.000000000 +0400
+@@ -190,6 +190,8 @@
+ 				else
+ 					AC_MSG_WARN([support for kernels older than 2.6.9 dropped by 0.8.2; older than 2.6.16 dropped by 0.8.8])
+ 				fi
++			elif echo $MODUTS | grep "^3." >/dev/null; then
++				WCM_KERNEL_VER="2.6.30";
+ 			else
+ 				AC_MSG_WARN(kernel version $MODUTS not supported)
+ 			fi

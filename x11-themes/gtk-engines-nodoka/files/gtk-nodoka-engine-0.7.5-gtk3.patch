@@ -1,0 +1,272 @@
+diff -ruN gtk-nodoka-engine-0.7.5/src/GTKEngine/animation.h gtk-nodoka-engine-0.7.5-gtk3/src/GTKEngine/animation.h
+--- gtk-nodoka-engine-0.7.5/src/GTKEngine/animation.h	2010-08-23 18:03:31.000000000 +0400
++++ gtk-nodoka-engine-0.7.5-gtk3/src/GTKEngine/animation.h	2014-02-09 16:47:35.616932352 +0400
+@@ -25,7 +25,7 @@
+ #ifdef HAVE_ANIMATION
+ #include <gtk/gtk.h>
+ 
+-#define NDK_IS_PROGRESS_BAR(widget) GTK_IS_PROGRESS_BAR(widget) && widget->allocation.x != -1 && widget->allocation.y != -1
++#define NDK_IS_PROGRESS_BAR(widget, allocation) GTK_IS_PROGRESS_BAR(widget) && allocation.x != -1 && allocation.y != -1
+ #define ANIMATION_DELAY 100
+ #define CHECK_ANIMATION_TIME 0.5
+ 
+diff -ruN gtk-nodoka-engine-0.7.5/src/GTKEngine/nodoka_style.c gtk-nodoka-engine-0.7.5-gtk3/src/GTKEngine/nodoka_style.c
+--- gtk-nodoka-engine-0.7.5/src/GTKEngine/nodoka_style.c	2010-08-23 18:03:31.000000000 +0400
++++ gtk-nodoka-engine-0.7.5-gtk3/src/GTKEngine/nodoka_style.c	2014-02-09 16:53:49.351958530 +0400
+@@ -58,7 +58,7 @@
+ static GtkStyleClass *nodoka_parent_class;
+ 
+ static cairo_t *
+-nodoka_begin_paint (GdkDrawable * window, GdkRectangle * area)
++nodoka_begin_paint (GdkWindow * window, GdkRectangle * area)
+ {
+ 	cairo_t *cr;
+ 
+@@ -118,6 +118,8 @@
+ static void
+ nodoka_style_draw_flat_box (DRAW_ARGS)
+ {
++	cairo_t *cr = nodoka_begin_paint (window, area);
++	
+ 	if (detail && state_type == GTK_STATE_SELECTED
+ 		&& (!strncmp ("cell_even", detail, 9)
+ 			|| !strncmp ("cell_odd", detail, 8)))
+@@ -125,7 +127,6 @@
+ 
+ 		NodokaStyle *nodoka_style = NODOKA_STYLE (style);
+ 		NodokaColors *colors = &nodoka_style->colors;
+-		cairo_t *cr = nodoka_begin_paint (window, area);
+ 
+ 		nodoka_sanitize_size (window, &width, &height);
+ 
+@@ -133,7 +134,6 @@
+ 		nodoka_set_widget_parameters (widget, style, state_type, &params);
+ 
+ 		nodoka_draw_selected_cell (cr, colors, &params, x, y, width, height);
+-		cairo_destroy (cr);
+ 	}
+ 	else if (DETAIL ("tooltip"))
+ 	{
+@@ -142,13 +142,11 @@
+ 
+ 		NodokaStyle *nodoka_style = NODOKA_STYLE (style);
+ 		NodokaColors *colors = &nodoka_style->colors;
+-		cairo_t *cr = nodoka_begin_paint (window, area);
+-
++		
+ 		nodoka_sanitize_size (window, &width, &height);
+ 
+ 		nodoka_draw_tooltip (cr, colors, &params, x, y, width, height);
+-
+-		cairo_destroy (cr);
++		
+ 	}
+ 	else if (DETAIL ("entry_bg") && !(widget && gtk_widget_get_parent (widget) && GTK_IS_TREE_VIEW (gtk_widget_get_parent (widget))))
+ 	{
+@@ -157,7 +155,6 @@
+ 		 * cut.                                                    */
+ 		
+ 		NodokaStyle *nodoka_style = NODOKA_STYLE (style);
+-		cairo_t *cr = nodoka_begin_paint (window, area);
+ 
+ 		nodoka_sanitize_size (window, &width, &height);
+ 		
+@@ -211,8 +208,6 @@
+ 
+ 		nodoka_draw_entry (cr, &nodoka_style->colors, &params, &entry, x, y, width,
+ 						   height);
+-		
+-		cairo_destroy (cr);
+ 	}
+ 	else if (DETAIL("checkbutton") || DETAIL("radiobutton"))
+ 	{
+@@ -221,10 +216,13 @@
+ 
+ 	else
+ 	{
+-		nodoka_parent_class->draw_flat_box (style, window, state_type,
+-											shadow_type, area, widget, detail,
++		nodoka_parent_class->draw_flat_box (style, cr, state_type,
++											shadow_type, widget, detail,
+ 											x, y, width, height);
+ 	}
++	
++	cairo_destroy (cr);
++	
+ 	/* Dotted listview */
+ 	if (detail
+ 		&& (!strncmp ("cell_even", detail, 9)
+@@ -313,8 +311,8 @@
+ 
+ 		nodoka_set_widget_parameters (widget, style, state_type, &params);
+ 
+-		gtk_style_apply_default_background (style, window, TRUE, state_type,
+-											area, x, y, width, height);
++		gtk_style_apply_default_background (style, cr, window, state_type,
++											x, y, width, height);
+ 
+ 		nodoka_draw_statusbar (cr, colors, &params, x, y, width, height);
+ 	}
+@@ -429,8 +427,8 @@
+ 	}
+ 	else
+ 	{
+-		nodoka_parent_class->draw_box_gap (style, window, state_type,
+-										   shadow_type, area, widget, detail, x,
++		nodoka_parent_class->draw_box_gap (style, cr, state_type,
++										   shadow_type, widget, detail, x,
+ 										   y, width, height, gap_side, gap_x,
+ 										   gap_width);
+ 	}
+@@ -473,8 +471,8 @@
+ 	}
+ 	else
+ 	{
+-		nodoka_parent_class->draw_extension (style, window, state_type,
+-											 shadow_type, area, widget, detail,
++		nodoka_parent_class->draw_extension (style, cr, state_type,
++											 shadow_type, widget, detail,
+ 											 x, y, width, height, gap_side);
+ 	}
+ 
+@@ -626,8 +624,8 @@
+ 		else
+ 			header.order = NDK_ORDER_MIDDLE;
+ 
+-		gtk_style_apply_default_background (style, window, FALSE, state_type,
+-						area, x, y, width, height);
++		gtk_style_apply_default_background (style, cr, window, state_type,
++						x, y, width, height);
+ 
+ 		nodoka_draw_list_view_header (cr, colors, &params, &header, x, y, width,
+ 									  height);
+@@ -915,12 +913,16 @@
+ 	{
+ 		WidgetParameters params;
+ 		ProgressBarParameters progressbar;
++		GtkAllocation allocation;
+ 		gdouble elapsed = 0.0;
+ 
++		gtk_widget_get_allocation (widget, &allocation);
++
+ #ifdef HAVE_ANIMATION
+-		if (nodoka_style->animation && NDK_IS_PROGRESS_BAR (widget))
++		if (nodoka_style->animation && NDK_IS_PROGRESS_BAR (widget, allocation))
+ 		{
+-			gboolean activity_mode = GTK_PROGRESS (widget)->activity_mode;
++			gboolean activity_mode;
++			g_object_get                    (G_OBJECT(widget), "activity-mode", &activity_mode, NULL );
+ 
+ 			if (!activity_mode)
+ 				nodoka_animation_progressbar_add ((gpointer) widget);
+@@ -1308,8 +1310,8 @@
+ 	}
+ 	else
+ 	{
+-		nodoka_parent_class->draw_box (style, window, state_type, shadow_type,
+-									   area, widget, detail, x, y, width,
++		nodoka_parent_class->draw_box (style, cr, state_type, shadow_type,
++									   widget, detail, x, y, width,
+ 									   height);
+ 	}
+ 
+@@ -1325,9 +1327,15 @@
+ 							   widget, detail, x, y, width, height);
+ 	}
+ 	else
+-		nodoka_parent_class->draw_slider (style, window, state_type,
+-										  shadow_type, area, widget, detail, x,
++	{
++		cairo_t *cr = nodoka_begin_paint (window, area);
++		
++		nodoka_parent_class->draw_slider (style, cr, state_type,
++										  shadow_type, widget, detail, x,
+ 										  y, width, height, orientation);
++		
++		cairo_destroy (cr);
++	}
+ }
+ 
+ static void
+@@ -1525,8 +1533,8 @@
+ 	}
+ 	else
+ 	{
+-		nodoka_parent_class->draw_shadow_gap (style, window, state_type,
+-											  shadow_type, area, widget, detail,
++		nodoka_parent_class->draw_shadow_gap (style, cr, state_type,
++											  shadow_type, widget, detail,
+ 											  x, y, width, height, gap_side,
+ 											  gap_x, gap_width);
+ 	}
+@@ -1631,15 +1639,12 @@
+ 						  const gchar * detail, gint x, gint y,
+ 						  PangoLayout * layout)
+ {
+-	GdkGC *gc;
++	cairo_t *cr;
+ 
+ 	g_return_if_fail (GTK_IS_STYLE (style));
+ 	g_return_if_fail (window != NULL);
+-
+-	gc = use_text ? style->text_gc[state_type] : style->fg_gc[state_type];
+-
+-	if (area)
+-		gdk_gc_set_clip_rectangle (gc, area);
++	
++	cr = nodoka_begin_paint (window, area);
+ 
+ 	if (state_type == GTK_STATE_INSENSITIVE)
+ 	{
+@@ -1650,26 +1655,26 @@
+ 
+ 		nodoka_set_widget_parameters (widget, style, state_type, &params);
+ 
+-		GdkColor etched;
+ 		NodokaRGB temp;
+ 
+ 		if (widget && !gtk_widget_get_has_window (widget))
+ 			nodoka_shade (&params.parentbg, &temp, 1.2);
+ 		else
+ 			nodoka_shade (&colors->bg[gtk_widget_get_state (widget)], &temp, 1.2);
+-		etched.red = (int) (temp.r * 65535);
+-		etched.green = (int) (temp.g * 65535);
+-		etched.blue = (int) (temp.b * 65535);
+-
+-		gdk_draw_layout_with_colors (window, style->text_gc[state_type], x + 1,
+-									 y + 1, layout, &etched, NULL);
+-		gdk_draw_layout (window, style->text_gc[state_type], x, y, layout);
++
++		cairo_push_group (cr);
++		cairo_set_source_surface (cr, cairo_get_target(cr), x + 1, y + 1);
++		pango_cairo_layout_path( cr, layout );
++		cairo_set_source_rgb (cr, temp.r, temp.g, temp.b);
++		cairo_fill( cr );
++		cairo_pop_group_to_source (cr);
++		
++		gdk_draw_layout (window, cr, state_type, TRUE, x, y, layout);
+ 	}
+ 	else
+-		gdk_draw_layout (window, gc, x, y, layout);
++		gdk_draw_layout (window, cr, state_type, use_text, x, y, layout);
+ 
+-	if (area)
+-		gdk_gc_set_clip_rectangle (gc, NULL);
++	cairo_destroy (cr);
+ }
+ 
+ static void
+@@ -2037,11 +2042,11 @@
+ 		screen = gtk_widget_get_screen (widget);
+ 		settings = gtk_settings_get_for_screen (screen);
+ 	}
+-	else if (style->colormap)
++	/*else if (style->colormap)
+ 	{
+ 		screen = gdk_colormap_get_screen (style->colormap);
+ 		settings = gtk_settings_get_for_screen (screen);
+-	}
++	}*/
+ 	else
+ 	{
+ 		settings = gtk_settings_get_default ();

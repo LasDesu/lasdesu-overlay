@@ -1,0 +1,36 @@
+diff -ruNd deadbeef-0.5.1-old/plugins/mpgmad/mpgmad.c deadbeef-0.5.1/plugins/mpgmad/mpgmad.c
+--- deadbeef-0.5.1-old/plugins/mpgmad/mpgmad.c	2011-05-22 17:58:53.000000000 +0400
++++ deadbeef-0.5.1/plugins/mpgmad/mpgmad.c	2011-12-30 13:28:04.000000000 +0400
+@@ -802,10 +802,12 @@
+     info->buffer.it = it;
+     info->info.readpos = 0;
+     if (!info->buffer.file->vfs->is_streaming ()) {
+-        int skip = deadbeef->junk_get_leading_size (info->buffer.file);
+-        if (skip > 0) {
++		int skip, totalskip = 0;
++		while ( ( skip = deadbeef->junk_get_leading_size (info->buffer.file) ) > 0 )
++		{
++			totalskip += skip;
+             trace ("mpgmad: skipping %d(%xH) bytes of junk\n", skip, skip);
+-            deadbeef->fseek (info->buffer.file, skip, SEEK_SET);
++            deadbeef->fseek (info->buffer.file, totalskip, SEEK_SET);
+         }
+         int res = cmp3_scan_stream (&info->buffer, -1);
+         if (res < 0) {
+@@ -1359,6 +1361,7 @@
+     deadbeef->fclose (fp);
+ 
+     const char *cuesheet = deadbeef->pl_find_meta (it, "cuesheet");
++#if 0 
+     if (cuesheet) {
+         DB_playItem_t *last = deadbeef->plt_insert_cue_from_buffer (plt, after, it, cuesheet, strlen (cuesheet), buffer.totalsamples-buffer.delay-buffer.padding, buffer.samplerate);
+         if (last) {
+@@ -1367,7 +1370,7 @@
+             return last;
+         }
+     }
+-
++#endif
+ 
+     // FIXME! bad numsamples passed to cue
+     DB_playItem_t *cue_after = deadbeef->plt_insert_cue (plt, after, it, buffer.totalsamples-buffer.delay-buffer.padding, buffer.samplerate);

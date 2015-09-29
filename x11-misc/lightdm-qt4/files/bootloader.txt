@@ -1,0 +1,12 @@
+
+! bootloader v3 only for ED64 v2
+!! do not ever turn off your system while update, it may destruct data in cart bios
+!!! MMC cards will not work with new bootloader
+
+
+1)os v1.2 or more new must be used
+2)copy bootloader-v*.edb on SD card
+3)select bootloader-v*.edb in cart browser menu and press start button
+4)wait until update will be complete
+5)turn off your system
+6)done
