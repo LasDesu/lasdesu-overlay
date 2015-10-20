@@ -1,0 +1,20 @@
+--- a/CMakeLists.txt	2015-10-20 14:06:21.563302616 +0300
++++ b/CMakeLists.txt	2015-10-20 14:07:00.799812092 +0300
+@@ -838,7 +838,7 @@
+ # Installation
+ #================================================
+ 
+-install( FILES INSTALL.txt
++install( FILES AUTHORS.txt CHANGELOG.txt README.txt
+     DESTINATION ${KICAD_DOCS}
+     COMPONENT resources )
+ 
+@@ -847,7 +847,7 @@
+ ###
+ if( UNIX )
+     install( DIRECTORY scripts
+-        DESTINATION ${KICAD_DOCS}
++        DESTINATION ${KICAD_DATA}
+         COMPONENT resources
+         )
+ endif()
