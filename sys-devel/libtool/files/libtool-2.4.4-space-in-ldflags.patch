@@ -1,0 +1,14 @@
+diff -ruN libtool-2.4.6.orig/m4/libtool.m4 libtool-2.4.6/m4/libtool.m4
+--- libtool-2.4.6.orig/m4/libtool.m4	2015-04-20 14:36:51.000000000 +0300
++++ libtool-2.4.6/m4/libtool.m4	2015-04-20 14:39:50.489176272 +0300
+@@ -7547,8 +7547,8 @@
+     -L* | -R* | -l*)
+        # Some compilers place space between "-{L,R}" and the path.
+        # Remove the space.
+-       if test x-L = "$p" ||
+-          test x-R = "$p"; then
++       if test x-L = "x$p" ||
++          test x-R = "x$p"; then
+ 	 prev=$p
+ 	 continue
+        fi
