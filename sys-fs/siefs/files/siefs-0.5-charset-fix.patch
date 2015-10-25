@@ -1,0 +1,12 @@
+diff --git a/siefs/siefs.c b/siefs/siefs.c
+index 35f07d9..e773b4a 100644
+--- a/siefs/siefs.c
++++ b/siefs/siefs.c
+@@ -19,6 +19,7 @@
+ #include <sys/statfs.h>
+ #include <pthread.h>
+ #include "obex.h"
++#include "charset.h"
+ 
+ #include "config.h"
+ 
