@@ -1,0 +1,35 @@
+--- CMakeLists.txt	2017-04-16 18:04:53.207432472 +0300
++++ CMakeLists.txt.new	2017-04-16 18:04:41.992703779 +0300
+@@ -105,6 +105,10 @@
+   set(ZLIB_NAME "zlib")
+   set(ZLIB_HOME "${DEP_SOURCE_DIR}/${ZLIB_NAME}" )
+   add_subdirectory(${ZLIB_HOME})
++else()
++  find_package(ZLIB REQUIRED)
++  include_directories( ${ZLIB_INCLUDE_DIRS} )
++  target_link_libraries( ${PROJECT_NAME} ${ZLIB_LIBRARIES} )
+ endif()
+ 
+ if( BUILD_MINIZIP )
+@@ -153,6 +157,10 @@
+   set(BZIPLIB_NAME "bzip2")
+   set(BZIPLIB_HOME "${DEP_SOURCE_DIR}/${BZIPLIB_NAME}" )
+   add_subdirectory(${BZIPLIB_HOME})
++else()
++  find_package(BZip2 REQUIRED)
++  include_directories( ${BZIP2_INCLUDE_DIRS} )
++  target_link_libraries( ${PROJECT_NAME} ${BZIP2_LIBRARIES} )
+ endif()
+ 
+ if( BUILD_FREETYPE )
+@@ -183,6 +191,10 @@
+   set(PNGLIB_NAME "libpng")
+   set(PNGLIB_HOME "${DEP_SOURCE_DIR}/${PNGLIB_NAME}" )
+   add_subdirectory(${PNGLIB_HOME})
++else()
++  find_package(PNG REQUIRED)
++  include_directories( ${PNG_INCLUDE_DIRS} )
++  target_link_libraries( ${PROJECT_NAME} ${PNG_LIBRARIES} )
+ endif()
+ 
+ # Include individual projects
