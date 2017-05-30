@@ -1,0 +1,27 @@
+--- scripts/src/osd/sdl_cfg.lua.orig	2017-04-26 07:36:37.000000000 +0300
++++ scripts/src/osd/sdl_cfg.lua	2017-04-26 20:33:05.628596617 +0300
+@@ -116,14 +116,16 @@
+ 	configuration { }
+ 
+ elseif _OPTIONS["targetos"]=="linux" then
+-	if _OPTIONS["QT_HOME"]~=nil then
+-		buildoptions {
+-			"-I" .. backtick(_OPTIONS["QT_HOME"] .. "/bin/qmake -query QT_INSTALL_HEADERS"),
+-		}
+-	else
+-		buildoptions {
+-			backtick(pkgconfigcmd() .. " --cflags Qt5Widgets"),
+-		}
++	if _OPTIONS["USE_QTDEBUG"]=="1" then
++		if _OPTIONS["QT_HOME"]~=nil then
++			buildoptions {
++				"-I" .. backtick(_OPTIONS["QT_HOME"] .. "/bin/qmake -query QT_INSTALL_HEADERS"),
++			}
++		else
++			buildoptions {
++				backtick("pkg-config --cflags Qt5Widgets"),
++			}
++		end
+ 	end
+ elseif _OPTIONS["targetos"]=="macosx" then
+ 	defines {

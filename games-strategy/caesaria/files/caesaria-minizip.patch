@@ -1,0 +1,13 @@
+--- dep/minizip/ioapi.h	2017-04-16 18:24:31.863029028 +0300
++++ dep/minizip/ioapi.h.new	2017-04-16 18:24:22.510255345 +0300
+@@ -31,6 +31,10 @@
+ #endif
+ #endif
+ 
++#ifndef OF
++#define OF(op)	op
++#endif
++
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
