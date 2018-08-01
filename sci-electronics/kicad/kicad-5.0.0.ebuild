@@ -16,13 +16,18 @@ LIB_PV=4.0.7
 
 DESCRIPTION="Electronic Schematic and PCB design tools."
 HOMEPAGE="http://www.kicad-pcb.org"
-SRC_URI="https://github.com/KiCad/${PN}-source-mirror/archive/${MY_PV}/${MY_P}.tar.gz -> ${P}.tar.gz
+SRC_URI="https://github.com/KiCad/${PN}-source-mirror/archive/${MY_PV}.tar.gz -> ${P}.tar.gz
+	!minimal? (
+		https://github.com/KiCad/${PN}-templates/archive/${MY_PV}.tar.gz -> ${P}-templates.tar.gz
+		https://github.com/KiCad/${PN}-symbols/archive/${MY_PV}.tar.gz -> ${P}-symbols.tar.gz
+		https://github.com/KiCad/${PN}-footprints/archive/${MY_PV}.tar.gz -> ${P}-footprints.tar.gz
+	)
 	i18n? ( https://github.com/KiCad/${PN}-i18n/archive/${MY_PV}.tar.gz -> ${P}-i18n.tar.gz )"
 
 LICENSE="GPL-2+ GPL-3+ Boost-1.0"
 SLOT="0"
 KEYWORDS="amd64"
-IUSE="debug doc examples github i18n libressl opencascade +python"
+IUSE="debug doc examples github i18n libressl opencascade minimal +python"
 LANGS="bg ca cs de el en es fi fr hu it ja ko nl pl pt ru sk sl sv zh-CN"
 for lang in ${LANGS} ; do
 	IUSE="${IUSE} l10n_${lang}"
@@ -72,11 +77,33 @@ src_prepare() {
 	xdg_src_prepare
 	cmake-utils_src_prepare
 
-	# Remove cvpcb desktop file as it does nothing
-	#rm "resources/linux/mime/applications/cvpcb.desktop" || die
-
-	# remove templates as they are not needed to run binaries
-	sed -e '/add_subdirectory( template )/d' -i CMakeLists.txt || die
+	
+	# Handle optional minimal install.
+	if use minimal; then
+		# remove templates as they are not needed to run binaries
+		sed -e '/add_subdirectory( template )/d' -i CMakeLists.txt || die
+	else
+		# create a link to the templates library and add cmake build rule for it
+		ln -s "${WORKDIR}/${MY_P}-templates" "${S}/${PN}-templates" || die
+		# create a link to the symbols library and add cmake build rule for it
+		ln -s "${WORKDIR}/${MY_P}-symbols" "${S}/${PN}-symbols" || die
+		# create a link to the footprints library and add cmake build rule for it
+		ln -s "${WORKDIR}/${MY_P}-footprints" "${S}/${PN}-footprints" || die
+		
+		# add the templates directory to cmake as a subproject to build
+		sed "/add_subdirectory( template )/a add_subdirectory( ${PN}-templates )" -i CMakeLists.txt || die
+		# add the footprints directory to cmake as a subproject to build
+		sed "/add_subdirectory( ${PN}-templates )/a add_subdirectory( ${PN}-symbols )" -i CMakeLists.txt || die
+		# add the symbols directory to cmake as a subproject to build
+		sed "/add_subdirectory( ${PN}-symbols )/a add_subdirectory( ${PN}-footprints )" -i CMakeLists.txt || die
+		
+		# remove duplicate uninstall directions for the templates module
+		sed '/make uninstall/,/# /d' -i ${PN}-templates/CMakeLists.txt || die
+		# remove duplicate uninstall directions for the symbols module
+		sed '/make uninstall/,/# /d' -i ${PN}-symbols/CMakeLists.txt || die
+		# remove duplicate uninstall directions for the footprints module
+		sed '/The uninstaller does not remove folders only files/,/# /d' -i ${PN}-footprints/CMakeLists.txt || die
+	fi
 
 	# Add internationalization for the GUI
 	if use i18n; then
@@ -158,13 +185,15 @@ pkg_postinst() {
 	xdg_pkg_postinst
 	gnome2_icon_cache_update
 
-	ewarn "If the schematic and/or board editors complain about missing libraries when you"
-	ewarn "open old projects, you will have to take one or more of the following actions :"
-	ewarn "- Install the missing libraries manually."
-	ewarn "- Remove the libraries from the 'Libs and Dir' preferences."
-	ewarn "- Fix the libraries' locations in the 'Libs and Dir' preferences."
-	ewarn "- Emerge ${PN} without the 'minimal' USE flag."
-	elog ""
+	if use minimal ; then
+		ewarn "If the schematic and/or board editors complain about missing libraries when you"
+		ewarn "open old projects, you will have to take one or more of the following actions :"
+		ewarn "- Install the missing libraries manually."
+		ewarn "- Remove the libraries from the 'Libs and Dir' preferences."
+		ewarn "- Fix the libraries' locations in the 'Libs and Dir' preferences."
+		ewarn "- Emerge ${PN} without the 'minimal' USE flag."
+		ewarn ""
+	fi
 	elog "You may want to emerge media-gfx/wings if you want to create 3D models of components."
 	elog "For help and extended documentation emerge app-doc/kicad-doc."
 }
