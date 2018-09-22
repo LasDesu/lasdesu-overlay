@@ -1,0 +1,11 @@
+--- a/setup.py	2018-09-22 15:28:05.765177884 +0300
++++ b/setup.py	2018-09-22 15:35:17.303391720 +0300
+@@ -5,7 +5,7 @@
+ else:
+     from distutils.core import setup
+ 
+-if "install" in sys.argv:
++if 0:
+     for arg in sys.argv:
+         if arg.startswith("--install-lib="):
+             break

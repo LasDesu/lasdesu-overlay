@@ -1,0 +1,12 @@
+--- a/setup.py	2018-09-22 15:42:29.724636044 +0300
++++ b/setup.py	2018-09-22 15:42:37.278466129 +0300
+@@ -31,9 +31,7 @@
+     "fstd": ".",
+     "fsui": ".",
+     "launcher": ".",
+-    "OpenGL": ".",
+     "oyoyo": ".",
+-    "six": ".",
+     "workspace": ".",
+ }
+ packages = sorted(package_map.keys())
