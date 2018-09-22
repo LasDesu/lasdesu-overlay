@@ -3,7 +3,7 @@
 # $Id$
 
 EAPI=5
-inherit eutils qt4-r2 games
+inherit eutils qmake-utils games
 
 DESCRIPTION="Creates and manages configuration files for DOSBox"
 HOMEPAGE="http://sourceforge.net/projects/dboxfe.berlios/"
@@ -25,7 +25,7 @@ src_prepare() {
 }
 
 src_configure() {
-	qt4-r2_src_configure
+	eqmake4
 }
 
 src_install() {
