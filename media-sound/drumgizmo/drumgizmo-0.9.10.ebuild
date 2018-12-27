@@ -19,7 +19,7 @@ RDEPEND="
 	x11-libs/libX11
 	media-libs/zita-resampler
 	alsa? ( media-libs/alsa-lib )
-	jack? ( media-sound/jack-audio-connection-kit )
+	jack? ( virtual/jack )
 	midifile? ( >=media-libs/libsmf-1.2 )
 "
 DEPEND="${RDEPEND}
