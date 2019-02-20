@@ -1,0 +1,20 @@
+--- xfce4-mixer-4.11.0/panel-plugin/Makefile.am.old	2019-02-20 12:45:25.458709328 +0300
++++ xfce4-mixer-4.11.0/panel-plugin/Makefile.am	2019-02-20 12:45:15.770744746 +0300
+@@ -28,6 +28,7 @@
+ 	$(LIBXFCE4UI_CFLAGS)						\
+ 	$(LIBXFCE4PANEL_CFLAGS)						\
+ 	$(XFCONF_CFLAGS)						\
++	$(DBUS_GLIB_CFLAGS)						\
+ 	$(GST_PLUGINS_BASE_CFLAGS)					\
+ 	$(KEYBINDER_CFLAGS)
+ 
+--- xfce4-mixer-4.11.0/xfce4-mixer/Makefile.am.old	2019-02-20 12:59:30.914624312 +0300
++++ xfce4-mixer-4.11.0/xfce4-mixer/Makefile.am	2019-02-20 12:59:19.931664333 +0300
+@@ -33,6 +33,7 @@
+ 	$(LIBXFCE4UTIL_CFLAGS)						\
+ 	$(LIBXFCE4UI_CFLAGS)						\
+ 	$(XFCONF_CFLAGS)						\
++	$(DBUS_GLIB_CFLAGS)						\
+ 	$(GST_PLUGINS_BASE_CFLAGS)
+ 
+ xfce4_mixer_DEPENDENCIES = 						\
