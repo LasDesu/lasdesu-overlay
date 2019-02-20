@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=5
-inherit xfconf
+inherit xfconf autotools
 
 DESCRIPTION="A volume control application and panel plug-in for Xfce"
 HOMEPAGE="https://git.xfce.org/apps/xfce4-mixer/"
@@ -30,6 +30,12 @@ DEPEND="${COMMON_DEPEND}
 	dev-util/intltool
 	sys-devel/gettext
 	virtual/pkgconfig"
+	
+src_prepare() {
+	epatch "${FILESDIR}/${PV}-dbus_glib.patch"
+	eautoreconf
+	xdt-autogen
+}
 
 pkg_setup() {
 	XFCONF=(
