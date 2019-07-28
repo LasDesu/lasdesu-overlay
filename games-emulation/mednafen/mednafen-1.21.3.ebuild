@@ -22,7 +22,7 @@ RDEPEND="
 	virtual/opengl
 	media-libs/tremor
 	alsa? ( media-libs/alsa-lib )
-	jack? ( media-sound/jack-audio-connection-kit )
+	jack? ( virtual/jack )
 	sndfile? ( media-libs/libsndfile )
 	nls? ( virtual/libintl )"
 DEPEND="${RDEPEND}
