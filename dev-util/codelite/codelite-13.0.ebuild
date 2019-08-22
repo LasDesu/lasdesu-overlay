@@ -1,6 +1,6 @@
 EAPI=6
 
-inherit cmake-utils
+inherit cmake-utils xdg-utils
 
 DESCRIPTION="Cross platform IDE for the C/C++ programming languages"
 HOMEPAGE="http://www.codelite.org/"
@@ -33,4 +33,12 @@ src_configure() {
 	)
 
 	cmake-utils_src_configure
+}
+
+pkg_postinst() {
+	xdg_icon_cache_update
+}
+
+pkg_postrm() {
+	xdg_icon_cache_update
 }
