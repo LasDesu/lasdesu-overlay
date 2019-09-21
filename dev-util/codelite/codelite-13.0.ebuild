@@ -1,6 +1,8 @@
 EAPI=6
 
-inherit cmake-utils xdg-utils
+WX_GTK_VER="3.0"
+
+inherit cmake-utils xdg-utils wxwidgets
 
 DESCRIPTION="Cross platform IDE for the C/C++ programming languages"
 HOMEPAGE="http://www.codelite.org/"
@@ -17,13 +19,14 @@ fi
 SLOT="0"
 IUSE="-sftp -lldb php deb +pch"
 
-RDEPEND="x11-libs/wxGTK:3.0
+RDEPEND="x11-libs/wxGTK:${WX_GTK_VER}
 	dev-db/sqlite:3
 	sftp? ( net-libs/libssh )
 	lldb? ( dev-util/lldb )"
 DEPEND="${RDEPEND}"
 
 src_configure() {
+	setup-wxwidgets
 	local mycmakeargs=(
 		-DWITH_PCH=$(usex pch 1 0)
 		-DENABLE_SFTP=$(usex sftp 1 0)
