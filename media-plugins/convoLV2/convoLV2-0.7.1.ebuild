@@ -3,7 +3,6 @@
 # $Header: $
 
 EAPI=5
-
 if [[ "${PV}" = "9999" ]] ; then
 	inherit git-2
 fi
@@ -25,8 +24,7 @@ SLOT="0"
 IUSE=""
 
 DEPEND="media-libs/lv2
-	media-libs/zita-convolver
-	media-libs/libsndfile
+	>=media-libs/zita-convolver-3.0.0
 	media-libs/libsndfile
 	x11-libs/gtk+:2"
 RDEPEND=""
@@ -38,5 +36,5 @@ src_configure() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" PREFIX="/usr" LIBDIR="$(get_libdir)" install
+	emake DESTDIR="${D}" PREFIX="/usr" LV2DIR="/usr/$(get_libdir)/lv2" install
 }
