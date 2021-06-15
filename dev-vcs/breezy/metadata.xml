@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <maintainer type="person">
+    <email>maintainer-wanted@gentoo.org</email>
+  </maintainer>
+  <longdescription lang="en">
+    Breezy has built-in support for the Git and Bazaar file formats
+    and network protocols. It is a replacement for GNU Bazaar, with
+    support for Python 2.7 and above.
+  </longdescription>
+  <upstream>
+    <remote-id type="github">breezy-team</remote-id>
+  </upstream>
+  <use>
+    <flag name="gpg">Support signing with GnuPG</flag>
+    <flag name="sftp">Enable sftp support</flag>
+  </use>
+</pkgmetadata>

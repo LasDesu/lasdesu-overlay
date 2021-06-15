@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <maintainer type="person">
+    <email>maintainer-wanted@gentoo.org</email>
+  </maintainer>
+  <longdescription lang="en">
+    Gentoo virtual package for the Bazaar distributed version control
+    system.
+  </longdescription>
+</pkgmetadata>
