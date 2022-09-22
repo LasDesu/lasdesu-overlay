@@ -1,0 +1,66 @@
+diff -ru linux-5.15.59-gentoo/drivers/gpu/drm/radeon/atombios_encoders.c linux-5.15.59-my/drivers/gpu/drm/radeon/atombios_encoders.c
+--- linux-5.15.59-gentoo/drivers/gpu/drm/radeon/atombios_encoders.c	2022-08-29 10:29:12.305193765 +0300
++++ linux-5.15.59-my/drivers/gpu/drm/radeon/atombios_encoders.c	2022-09-16 16:55:33.351255156 +0300
+@@ -786,6 +786,53 @@
+ 	}
+ }
+ 
++union lvds_info {
++	struct _ATOM_LVDS_INFO info;
++	struct _ATOM_LVDS_INFO_V12 info_12;
++};
++
++static void atombios_apply_lvds_quirks(struct radeon_encoder *encoder)
++{
++	struct drm_device *dev = encoder->base.dev;
++	struct radeon_device *rdev = dev->dev_private;
++	struct radeon_mode_info *mode_info = &rdev->mode_info;
++	struct drm_display_mode *mode = &encoder->native_mode;
++	int index = GetIndexIntoMasterTable(DATA, LVDS_Info);
++	uint16_t data_offset;
++	union lvds_info *lvds_info;
++
++	if ( (encoder->devices & ATOM_DEVICE_LCD_SUPPORT) == 0 )
++		return;
++
++	if ( !atom_parse_data_header(mode_info->atom_context, index, NULL,
++			NULL, NULL, &data_offset) )
++		return;
++	lvds_info =
++		(union lvds_info *)(mode_info->atom_context->bios + data_offset);
++
++	if ( dmi_match( DMI_PRODUCT_NAME, "iMac10,1" ) )
++	{
++		lvds_info->info.sLCDTiming.usPixClk = cpu_to_le16( mode->clock / 10 );
++		lvds_info->info.sLCDTiming.usHActive = cpu_to_le16( mode->hdisplay );
++		lvds_info->info.sLCDTiming.usVActive = cpu_to_le16( mode->vdisplay );
++		lvds_info->info.sLCDTiming.usHBlanking_Time =
++			cpu_to_le16( mode->htotal - mode->hdisplay );
++		lvds_info->info.sLCDTiming.usHSyncOffset =
++			cpu_to_le16( mode->hsync_start - mode->hdisplay );
++		lvds_info->info.sLCDTiming.usHSyncWidth =
++			cpu_to_le16( mode->hsync_end - mode->hsync_start );
++		lvds_info->info.sLCDTiming.usVBlanking_Time =
++			cpu_to_le16( mode->vtotal - mode->vdisplay );
++		lvds_info->info.sLCDTiming.usVSyncOffset =
++			cpu_to_le16( mode->vsync_start - mode->hdisplay );
++		lvds_info->info.sLCDTiming.usVSyncWidth = 
++			cpu_to_le16( mode->vsync_end - mode->vsync_start );
++		lvds_info->info.ucLVDS_Misc = 0x01 | 0x0C | 0x40;
++		if ( radeon_atom_get_bpc(&encoder->base) == PANEL_8BIT_PER_COLOR )
++			lvds_info->info.ucLVDS_Misc |= 0x12;
++	}
++}
++
+ /*
+  * DIG Encoder/Transmitter Setup
+  *
+@@ -2290,6 +2337,8 @@
+ 			atombios_yuv_setup(encoder, false);
+ 	}
+ 
++	atombios_apply_lvds_quirks(radeon_encoder);
++
+ 	switch (radeon_encoder->encoder_id) {
+ 	case ENCODER_OBJECT_ID_INTERNAL_TMDS1:
+ 	case ENCODER_OBJECT_ID_INTERNAL_KLDSCP_TMDS1:
