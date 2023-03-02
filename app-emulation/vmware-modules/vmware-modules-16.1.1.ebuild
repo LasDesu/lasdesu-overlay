@@ -3,7 +3,7 @@
 
 EAPI=7
 
-inherit eutils flag-o-matic linux-info linux-mod user udev
+inherit eutils flag-o-matic linux-info linux-mod udev
 
 DESCRIPTION="VMware kernel modules"
 HOMEPAGE="https://github.com/mkubecek/vmware-host-modules"
@@ -16,7 +16,7 @@ SLOT="0"
 KEYWORDS="~amd64"
 IUSE=""
 
-RDEPEND=""
+RDEPEND="acct-group/vmware"
 DEPEND=""
 
 RESTRICT="mirror"
@@ -43,8 +43,6 @@ pkg_setup() {
 	VMWARE_MOD_DIR="${PN}-${PVR}"
 
 	BUILD_TARGETS="auto-build KERNEL_DIR=${KERNEL_DIR} KBUILD_OUTPUT=${KV_OUT_DIR}"
-
-	enewgroup "${VMWARE_GROUP}"
 
 	filter-flags -mfpmath=sse -mavx -mpclmul -maes
 	append-cflags -mno-sse  # Found a problem similar to bug #492964
