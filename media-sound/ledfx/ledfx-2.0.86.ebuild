@@ -30,6 +30,7 @@ RDEPEND="
 	dev-python/pyserial
 	dev-python/zeroconf
 	dev-python/aiohttp-cors
+	dev-python/pillow
 	media-libs/aubio[python]
 	dev-python/python-samplerate
 	dev-python/python-sounddevice
