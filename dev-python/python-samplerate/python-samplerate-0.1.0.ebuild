@@ -21,6 +21,7 @@ KEYWORDS="~alpha amd64 ~arm arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~riscv ~s390 spa
 distutils_enable_tests pytest
 
 RDEPEND="
+	dev-python/cffi[${PYTHON_USEDEP}]
 	media-libs/libsamplerate
 "
 DEPEND="${RDEPEND}"
