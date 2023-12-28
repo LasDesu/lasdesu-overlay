@@ -25,25 +25,25 @@ KEYWORDS="~alpha amd64 ~arm arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~riscv ~s390 spa
 distutils_enable_tests pytest
 
 RDEPEND="
-	dev-python/voluptuous
-	dev-python/pybase64
-	dev-python/pyserial
-	dev-python/zeroconf
-	dev-python/aiohttp-cors
-	dev-python/pillow
+	dev-python/voluptuous[${PYTHON_USEDEP}]
+	dev-python/pybase64[${PYTHON_USEDEP}]
+	dev-python/pyserial[${PYTHON_USEDEP}]
+	dev-python/zeroconf[${PYTHON_USEDEP}]
+	dev-python/aiohttp-cors[${PYTHON_USEDEP}]
+	dev-python/pillow[${PYTHON_USEDEP}]
 	media-libs/aubio[python]
-	dev-python/python-samplerate
-	dev-python/python-sounddevice
-	dev-python/python-rtmidi
-	dev-python/openrgb-python
-	dev-python/icmplib
-	dev-python/sacn
-	dev-python/python-osc
-	dev-python/flux-led
-	dev-python/mss
-	dev-python/psutil
-	dev-python/paho-mqtt
-	dev-python/uvloop
+	dev-python/python-samplerate[${PYTHON_USEDEP}]
+	dev-python/python-sounddevice[${PYTHON_USEDEP}]
+	dev-python/python-rtmidi[${PYTHON_USEDEP}]
+	dev-python/openrgb-python[${PYTHON_USEDEP}]
+	dev-python/icmplib[${PYTHON_USEDEP}]
+	dev-python/sacn[${PYTHON_USEDEP}]
+	dev-python/python-osc[${PYTHON_USEDEP}]
+	dev-python/flux-led[${PYTHON_USEDEP}]
+	dev-python/mss[${PYTHON_USEDEP}]
+	dev-python/psutil[${PYTHON_USEDEP}]
+	dev-python/paho-mqtt[${PYTHON_USEDEP}]
+	dev-python/uvloop[${PYTHON_USEDEP}]
 "
 
 DEPEND="${RDEPEND}"
